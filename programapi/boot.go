@@ -67,6 +67,26 @@ func newBotManager(sess *discordgo.Session, guildID string, programName string, 
 
 }
 
+func (m *BotManager) SetProgramName(name string) {
+	m.programName = name
+}
+
+func (m *BotManager) SetProgramColor(color int) {
+	m.programColor = color
+}
+
+func (m *BotManager) GuildID() *discordgo.Session {
+	return m.session
+}
+
+func (m *BotManager) ProgramName() string {
+	return m.programName
+}
+
+func (m *BotManager) ProgamEmbedColor() int {
+	return m.programColor
+}
+
 // ()->(manager, closeFunc, error)
 func Boot(option *bootOption) (manager *BotManager, closeFunc func() error, err error) {
 	discordSess, err := discordgo.New(option.DiscordToken)
