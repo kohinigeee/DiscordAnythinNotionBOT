@@ -23,44 +23,61 @@ func (mng *BotManager) attachProgramName(msg string) string {
 	return fmt.Sprintf("**[%s]**\n", mng.programName) + msg
 }
 
-func (mng *BotManager) SendMsg(channelID, content string) {
+func (mng *BotManager) SendMsg(channelID, content string) (*discordgo.Message, error) {
 	content = mng.attachProgramName(content)
 
-	mng.session.ChannelMessageSend(channelID, content)
-}
-
-func (mng *BotManager) SendNormalEmbedMsg(channelID, title, content string) error {
-
-	embed := mng.createEmbedMsg(defaultNormalEmbedColor, title, content)
-	_, err := mng.session.ChannelMessageSendEmbed(channelID, embed)
+	msg, err := mng.session.ChannelMessageSend(channelID, content)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return msg, nil
 }
 
-func (mng *BotManager) SendErrorEmbedMsg(channelID, title, content string) error {
+func (mng *BotManager) SendNormalEmbedMsg(channelID, title, content string) (*discordgo.Message, error) {
+
+	embed := mng.createEmbedMsg(defaultNormalEmbedColor, title, content)
+	msg, err := mng.session.ChannelMessageSendEmbed(channelID, embed)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return msg, nil
+}
+
+func (mng *BotManager) SendErrorEmbedMsg(channelID, title, content string) (*discordgo.Message, error) {
 	color := 0xff0000
 
 	embed := mng.createEmbedMsg(color, title, content)
-	_, err := mng.session.ChannelMessageSendEmbed(channelID, embed)
+	msg, err := mng.session.ChannelMessageSendEmbed(channelID, embed)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return msg, nil
 }
 
-func (mng *BotManager) SendProgramEmbedMsg(channelID, title, content string) error {
+func (mng *BotManager) SendProgramEmbedMsg(channelID, title, content string) (*discordgo.Message, error) {
 	embed := mng.createEmbedMsg(mng.programColor, title, content)
-	_, err := mng.session.ChannelMessageSendEmbed(channelID, embed)
+	msg, err := mng.session.ChannelMessageSendEmbed(channelID, embed)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return msg, nil
+}
+
+func (mng *BotManager) MessageThreadStart(channelID, messageID, threadName string, archiveDuartionMin int) (*discordgo.Channel, error) {
+
+	thread, err := mng.session.MessageThreadStart(channelID, messageID, threadName, archiveDuartionMin)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return thread, nil
 }
